@@ -36,7 +36,6 @@ A comprehensive web-based dashboard that displays space mission data from around
 ├── script-complete.js      # Complete dataset JavaScript (4,000+ missions)
 ├── script-embedded.js      # Sample data JavaScript (backup)
 ├── script.js               # Original JavaScript (CSV loading)
-├── start-server.bat        # Local server launcher for CORS bypass
 ├── demo-full-dataset.html  # Alternative demo file
 ├── convert_csv_to_js.py    # Python script for data conversion
 ├── Space_Corrected.csv     # Complete space missions dataset (4,326 missions)
@@ -82,10 +81,9 @@ A comprehensive web-based dashboard that displays space mission data from around
 ## How It Works
 
 ### Method 1: Local Server (Recommended for Full Dataset)
-1. **Launch Server**: Double-click `start-server.bat` to start Python HTTP server
-2. **Access Dashboard**: Visit `http://localhost:8000` in your browser
-3. **Complete Loading**: All 4,326 missions load automatically
-4. **Explore Data**: Use filters and search through the complete dataset
+1. **Access Dashboard**: Visit `http://localhost:8000` in your browser
+2. **Complete Loading**: All 4,326 missions load automatically
+3. **Explore Data**: Use filters and search through the complete dataset
 
 ### Method 2: Direct Browser Access
 1. **Open File**: Open `index.html` directly in browser
