@@ -195,6 +195,6 @@ The dashboard uses `Space_Corrected.csv` which contains **4,326 comprehensive sp
 This dashboard now utilizes **100% of the space missions data** (all 4,326 missions) from your CSV file, providing the most complete historical view of space exploration missions worldwide. The solution addresses the original requirement to move from "5 records" to "100% of data" with robust technical implementations.
 
 ### 💡 Credits & Inspiration
-> 🔁 This project was redesigned by me, based on the guidance and original work shared by my friend.  
+> 🔁 This project was redesigned by **Shrinivas Mudabe**, based on the guidance and original work shared by my friend.  
 > 📎 Original Repo: **Rohan Hake** (https://github.com/rohanhake98/Space-Missions)
 
