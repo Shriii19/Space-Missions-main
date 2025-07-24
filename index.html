@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Missions Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">
+                <i class="fas fa-rocket"></i>
+                Space Missions Dashboard
+            </h1>
+            <nav class="nav">
+                <a href="#missions" class="nav-link">Missions</a>
+                <a href="#stats" class="nav-link">Statistics</a>
+                <a href="#about" class="nav-link">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2 class="hero-title">Explore Space Missions</h2>
+                <p class="hero-subtitle">Discover the latest space exploration missions from around the world</p>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-rocket"></i>
+                        <h3>4,326</h3>
+                        <p>Total Missions</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-globe"></i>
+                        <h3>Multiple</h3>
+                        <p>Countries</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-satellite"></i>
+                        <h3>Various</h3>
+                        <p>Mission Types</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stats" class="stats-section">
+            <div class="container">
+                <h2 class="section-title">Mission Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-check-circle success"></i>
+                        <h3>Successful Missions</h3>
+                        <p class="stat-number" id="success-count">Loading...</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-times-circle failure"></i>
+                        <h3>Failed Missions</h3>
+                        <p class="stat-number" id="failure-count">Loading...</p>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-building"></i>
+                        <h3>Top Company</h3>
+                        <p class="stat-text" id="top-company">SpaceX</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="missions" class="missions-section">
+            <div class="container">
+                <h2 class="section-title">Recent Space Missions</h2>
+                
+                <div class="filters">
+                    <select id="companyFilter" class="filter-select">
+                        <option value="">All Companies</option>
+                        <option value="SpaceX">SpaceX</option>
+                        <option value="CASC">CASC</option>
+                        <option value="Roscosmos">Roscosmos</option>
+                        <option value="ULA">ULA</option>
+                        <option value="JAXA">JAXA</option>
+                        <option value="Rocket Lab">Rocket Lab</option>
+                    </select>
+                    
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="Success">Success</option>
+                        <option value="Failure">Failure</option>
+                    </select>
+                    
+                    <input type="text" id="searchInput" placeholder="Search missions..." class="search-input">
+                </div>
+
+                <div class="missions-grid" id="missionsGrid">
+                    <!-- Sample mission cards - these would be populated by JavaScript in a real application -->
+                    <div class="mission-card" data-company="SpaceX" data-status="Success">
+                        <div class="mission-header">
+                            <div class="company-badge spacex">SpaceX</div>
+                            <div class="status-badge success">Success</div>
+                        </div>
+                        <h3 class="mission-title">Falcon 9 Block 5 | Starlink V1 L9</h3>
+                        <div class="mission-details">
+                            <p class="mission-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                LC-39A, Kennedy Space Center, Florida, USA
+                            </p>
+                            <p class="mission-date">
+                                <i class="fas fa-calendar"></i>
+                                Fri Aug 07, 2020 05:12 UTC
+                            </p>
+                            <p class="mission-rocket">
+                                <i class="fas fa-rocket"></i>
+                                Cost: $50.0M
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mission-card" data-company="CASC" data-status="Success">
+                        <div class="mission-header">
+                            <div class="company-badge casc">CASC</div>
+                            <div class="status-badge success">Success</div>
+                        </div>
+                        <h3 class="mission-title">Long March 2D | Gaofen-9 04 & Q-SAT</h3>
+                        <div class="mission-details">
+                            <p class="mission-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Site 9401 (SLS-2), Jiuquan Satellite Launch Center, China
+                            </p>
+                            <p class="mission-date">
+                                <i class="fas fa-calendar"></i>
+                                Thu Aug 06, 2020 04:01 UTC
+                            </p>
+                            <p class="mission-rocket">
+                                <i class="fas fa-rocket"></i>
+                                Cost: $29.75M
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mission-card" data-company="ULA" data-status="Success">
+                        <div class="mission-header">
+                            <div class="company-badge ula">ULA</div>
+                            <div class="status-badge success">Success</div>
+                        </div>
+                        <h3 class="mission-title">Atlas V 541 | Perseverance</h3>
+                        <div class="mission-details">
+                            <p class="mission-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                SLC-41, Cape Canaveral AFS, Florida, USA
+                            </p>
+                            <p class="mission-date">
+                                <i class="fas fa-calendar"></i>
+                                Thu Jul 30, 2020 11:50 UTC
+                            </p>
+                            <p class="mission-rocket">
+                                <i class="fas fa-rocket"></i>
+                                Cost: $145.0M
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mission-card" data-company="Rocket Lab" data-status="Failure">
+                        <div class="mission-header">
+                            <div class="company-badge rocketlab">Rocket Lab</div>
+                            <div class="status-badge failure">Failure</div>
+                        </div>
+                        <h3 class="mission-title">Electron/Curie | Pics Or It Didn't Happen</h3>
+                        <div class="mission-details">
+                            <p class="mission-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Rocket Lab LC-1A, Māhia Peninsula, New Zealand
+                            </p>
+                            <p class="mission-date">
+                                <i class="fas fa-calendar"></i>
+                                Sat Jul 04, 2020 21:19 UTC
+                            </p>
+                            <p class="mission-rocket">
+                                <i class="fas fa-rocket"></i>
+                                Cost: $7.5M
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mission-card" data-company="JAXA" data-status="Success">
+                        <div class="mission-header">
+                            <div class="company-badge jaxa">JAXA</div>
+                            <div class="status-badge success">Success</div>
+                        </div>
+                        <h3 class="mission-title">H-IIA 202 | Hope Mars Mission</h3>
+                        <div class="mission-details">
+                            <p class="mission-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                LA-Y1, Tanegashima Space Center, Japan
+                            </p>
+                            <p class="mission-date">
+                                <i class="fas fa-calendar"></i>
+                                Sun Jul 19, 2020 21:58 UTC
+                            </p>
+                            <p class="mission-rocket">
+                                <i class="fas fa-rocket"></i>
+                                Cost: $90.0M
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mission-card" data-company="Roscosmos" data-status="Success">
+                        <div class="mission-header">
+                            <div class="company-badge roscosmos">Roscosmos</div>
+                            <div class="status-badge success">Success</div>
+                        </div>
+                        <h3 class="mission-title">Proton-M/Briz-M | Ekspress-80 & Ekspress-103</h3>
+                        <div class="mission-details">
+                            <p class="mission-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Site 200/39, Baikonur Cosmodrome, Kazakhstan
+                            </p>
+                            <p class="mission-date">
+                                <i class="fas fa-calendar"></i>
+                                Thu Jul 30, 2020 21:25 UTC
+                            </p>
+                            <p class="mission-rocket">
+                                <i class="fas fa-rocket"></i>
+                                Cost: $65.0M
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">About Space Missions</h2>
+                <div class="about-content">
+                    <p>This dashboard showcases space missions from various space agencies and private companies around the world. The data includes information about launch dates, locations, mission details, costs, and success rates.</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-search"></i>
+                            <h4>Search & Filter</h4>
+                            <p>Easily find missions by company, status, or search terms</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-chart-bar"></i>
+                            <h4>Statistics</h4>
+                            <p>View comprehensive statistics about mission success rates</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-globe"></i>
+                            <h4>Global Coverage</h4>
+                            <p>Missions from space agencies worldwide</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Space Missions Dashboard. Data visualization for educational purposes.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
