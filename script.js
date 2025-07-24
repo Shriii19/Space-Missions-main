@@ -9,10 +9,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to load and parse CSV data
     async function loadCSVData() {
+        console.log('Starting CSV data load...');
         try {
             const response = await fetch('Space_Corrected.csv');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const csvText = await response.text();
+            console.log('CSV file loaded successfully, parsing...');
             spaceMissions = parseCSV(csvText);
+            console.log(`Parsed ${spaceMissions.length} missions from CSV`);
+            
+            if (spaceMissions.length === 0) {
+                throw new Error('No valid missions found in CSV');
+            }
             
             // Initialize the dashboard after data is loaded
             initializeDashboard();
@@ -21,12 +31,41 @@ document.addEventListener('DOMContentLoaded', function() {
             renderAllMissions();
         } catch (error) {
             console.error('Error loading CSV data:', error);
+            console.log('Falling back to sample data...');
             // Fallback to sample data if CSV loading fails
             spaceMissions = getSampleData();
+            
+            // Show error message but continue with sample data
+            showErrorMessage(`
+                <div style="background: rgba(255, 107, 53, 0.1); border: 1px solid #ff6b35; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center;">
+                    <i class="fas fa-exclamation-triangle" style="color: #ff6b35; font-size: 2rem; margin-bottom: 10px;"></i>
+                    <h3 style="color: #ff6b35; margin-bottom: 10px;">CSV Loading Failed</h3>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 15px;">
+                        Could not load Space_Corrected.csv file. This might be due to browser security restrictions when opening files locally.
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+                        <strong>Solution:</strong> Serve this directory using a local web server (e.g., python -m http.server) or deploy to a web hosting service.
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-top: 10px;">
+                        <em>Currently showing sample data for demonstration.</em>
+                    </p>
+                </div>
+            `);
+            
             initializeDashboard();
             setupEventListeners();
             updateStatistics();
             renderAllMissions();
+        }
+    }
+
+    // Function to show error message
+    function showErrorMessage(htmlContent) {
+        const heroSection = document.querySelector('.hero .container');
+        if (heroSection) {
+            const errorDiv = document.createElement('div');
+            errorDiv.innerHTML = htmlContent;
+            heroSection.appendChild(errorDiv);
         }
     }
 
@@ -142,6 +181,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 detail: "Proton-M/Briz-M | Ekspress-80 & Ekspress-103",
                 status: "Success",
                 rocket: "65.0"
+            },
+            {
+                company: "NASA",
+                location: "LC-39A, Kennedy Space Center, Florida, USA",
+                date: "Sat May 30, 2020 19:22 UTC",
+                detail: "Falcon 9 Block 5 | Crew Dragon Demo-2",
+                status: "Success",
+                rocket: "50.0"
+            },
+            {
+                company: "Arianespace",
+                location: "ELA-3, Guiana Space Centre, French Guiana, France",
+                date: "Thu Jan 16, 2020 21:05 UTC",
+                detail: "Ariane 5 ECA | Eutelsat Konnect & GSAT-30",
+                status: "Success",
+                rocket: "200.0"
+            },
+            {
+                company: "Blue Origin",
+                location: "West Texas Suborbital Launch Site, Texas, USA",
+                date: "Wed Dec 11, 2019 15:00 UTC",
+                detail: "New Shepard | NS-12",
+                status: "Success",
+                rocket: ""
+            },
+            {
+                company: "ESA",
+                location: "ELA-3, Guiana Space Centre, French Guiana, France",
+                date: "Tue Jul 25, 2018 11:25 UTC",
+                detail: "Ariane 5 ECA | Galileo 23-26",
+                status: "Partial Failure",
+                rocket: "200.0"
             }
         ];
     }
@@ -154,29 +225,36 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear existing missions
         missionsGrid.innerHTML = '';
 
-        // Option 1: Show ALL missions (uncomment the line below and comment the next line)
-        // const missionsToShow = spaceMissions; // Show ALL missions
-        
-        // Option 2: Show first 200 missions for better performance (current setting)
-        const missionsToShow = spaceMissions.slice(0, 200); // Show first 200 missions
+        if (spaceMissions.length === 0) {
+            // Show error message if no data loaded
+            missionsGrid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Failed to load space missions data.</p>
+                    <p>Please check if the CSV file is accessible.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Show ALL missions from the dataset for complete data utilization
+        const missionsToShow = spaceMissions; // Show ALL missions from CSV
         
         missionsToShow.forEach((mission, index) => {
             const missionCard = createMissionCard(mission, index);
             missionsGrid.appendChild(missionCard);
         });
 
-        // Add info about total missions
-        if (spaceMissions.length > missionsToShow.length) {
-            const infoDiv = document.createElement('div');
-            infoDiv.className = 'missions-info';
-            infoDiv.innerHTML = `
-                <p style="text-align: center; margin: 20px; color: #666; font-style: italic;">
-                    Showing ${missionsToShow.length} of ${spaceMissions.length} total missions.
-                    ${spaceMissions.length > 200 ? 'Use filters to find specific missions.' : ''}
-                </p>
-            `;
-            missionsGrid.appendChild(infoDiv);
-        }
+        // Add info about total missions loaded
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'filter-info';
+        infoDiv.innerHTML = `
+            <p style="text-align: center; margin: 20px; color: #00d4ff; font-size: 1.1rem;">
+                <i class="fas fa-check-circle"></i>
+                Successfully loaded and displaying all ${spaceMissions.length} space missions from the dataset.
+            </p>
+        `;
+        missionsGrid.appendChild(infoDiv);
 
         // Update company filter options
         updateCompanyFilter();
@@ -190,27 +268,54 @@ document.addEventListener('DOMContentLoaded', function() {
         card.setAttribute('data-status', mission.status);
         card.style.animationDelay = `${(index % 20) * 0.1}s`; // Stagger animations
 
-        const statusClass = mission.status.toLowerCase() === 'success' ? 'success' : 'failure';
-        const companyClass = mission.company.toLowerCase().replace(/\s+/g, '');
+        // Better status classification
+        let statusClass = 'unknown';
+        const status = mission.status.toLowerCase();
+        if (status === 'success') {
+            statusClass = 'success';
+        } else if (status === 'failure') {
+            statusClass = 'failure';
+        } else if (status.includes('partial')) {
+            statusClass = 'partial';
+        }
+
+        // Clean company name for CSS class
+        const companyClass = mission.company.toLowerCase()
+            .replace(/\s+/g, '')
+            .replace(/[^a-zA-Z0-9]/g, '');
+
+        // Format date if available
+        const formattedDate = mission.date || 'Date not available';
+        
+        // Format cost if available
+        let costText = 'Cost: N/A';
+        if (mission.rocket && mission.rocket.trim()) {
+            const cost = mission.rocket.trim();
+            if (!isNaN(cost)) {
+                costText = `Cost: $${cost}M`;
+            } else {
+                costText = `Cost: ${cost}`;
+            }
+        }
 
         card.innerHTML = `
             <div class="mission-header">
-                <div class="company-badge ${companyClass}">${mission.company}</div>
-                <div class="status-badge ${statusClass}">${mission.status}</div>
+                <div class="company-badge ${companyClass}">${mission.company || 'Unknown'}</div>
+                <div class="status-badge ${statusClass}">${mission.status || 'Unknown'}</div>
             </div>
-            <h3 class="mission-title">${mission.detail}</h3>
+            <h3 class="mission-title">${mission.detail || 'Mission details not available'}</h3>
             <div class="mission-details">
                 <p class="mission-location">
                     <i class="fas fa-map-marker-alt"></i>
-                    ${mission.location}
+                    ${mission.location || 'Location not specified'}
                 </p>
                 <p class="mission-date">
                     <i class="fas fa-calendar"></i>
-                    ${mission.date}
+                    ${formattedDate}
                 </p>
                 <p class="mission-rocket">
                     <i class="fas fa-rocket"></i>
-                    ${mission.rocket ? `Cost: $${mission.rocket}M` : 'Cost: N/A'}
+                    ${costText}
                 </p>
             </div>
         `;
@@ -306,9 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         missionsGrid.innerHTML = '';
         
-        // Show first 300 filtered results (or all if filters are applied)
-        const maxResults = searchTerm || companyFilter || statusFilter ? 500 : 300;
-        const missionsToShow = filteredMissions.slice(0, maxResults);
+        // Show ALL filtered results (no artificial limit)
+        const missionsToShow = filteredMissions;
         
         missionsToShow.forEach((mission, index) => {
             const missionCard = createMissionCard(mission, index);
@@ -320,13 +424,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const infoDiv = document.createElement('div');
             infoDiv.className = 'filter-info';
             infoDiv.innerHTML = `
-                <p style="text-align: center; margin: 20px; color: #666; font-style: italic;">
-                    Found ${filteredMissions.length} matching missions. 
-                    ${missionsToShow.length < filteredMissions.length ? 
-                        `Showing first ${missionsToShow.length}.` : ''}
+                <p style="text-align: center; margin: 20px; color: #00d4ff; font-style: italic;">
+                    <i class="fas fa-filter"></i>
+                    Found and displaying ${filteredMissions.length} matching missions out of ${spaceMissions.length} total.
                 </p>
             `;
             missionsGrid.appendChild(infoDiv);
+        } else {
+            // Show no results message
+            const noResultsDiv = document.createElement('div');
+            noResultsDiv.className = 'error-message';
+            noResultsDiv.innerHTML = `
+                <div style="text-align: center; padding: 4rem 2rem; color: #ff6b35;">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p style="font-size: 1.2rem; margin-bottom: 1rem;">No missions found</p>
+                    <p style="color: rgba(255, 255, 255, 0.6);">Try adjusting your search filters</p>
+                </div>
+            `;
+            missionsGrid.appendChild(noResultsDiv);
         }
 
         console.log(`Showing ${missionsToShow.length} of ${filteredMissions.length} missions`);
@@ -337,6 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const successCount = spaceMissions.filter(mission => mission.status.toLowerCase() === 'success').length;
         const failureCount = spaceMissions.filter(mission => mission.status.toLowerCase() === 'failure').length;
         const totalCount = spaceMissions.length;
+        const successRate = totalCount > 0 ? Math.round((successCount / totalCount) * 100) : 0;
         
         // Update the statistics in the DOM
         const successElement = document.getElementById('success-count');
@@ -351,17 +467,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Update hero statistics
-        const heroTotalElement = document.querySelector('.hero-stats .stat-card h3');
+        const heroTotalElement = document.getElementById('hero-total-missions');
         if (heroTotalElement) {
-            heroTotalElement.textContent = totalCount.toLocaleString();
+            animateCounter(heroTotalElement, totalCount);
         }
 
-        // Find top company
+        // Update success rate in hero
+        const heroSuccessRateElement = document.getElementById('hero-success-rate');
+        if (heroSuccessRateElement) {
+            heroSuccessRateElement.textContent = `${successRate}%`;
+        }
+
+        // Update total companies
         const companyCounts = spaceMissions.reduce((acc, mission) => {
-            acc[mission.company] = (acc[mission.company] || 0) + 1;
+            if (mission.company) {
+                acc[mission.company] = (acc[mission.company] || 0) + 1;
+            }
             return acc;
         }, {});
         
+        const totalCompanies = Object.keys(companyCounts).length;
+        const heroCompaniesElement = document.getElementById('hero-total-companies');
+        if (heroCompaniesElement) {
+            heroCompaniesElement.textContent = totalCompanies;
+        }
+
+        // Find top company
         const topCompany = Object.keys(companyCounts).reduce((a, b) => 
             companyCounts[a] > companyCounts[b] ? a : b, '');
         
